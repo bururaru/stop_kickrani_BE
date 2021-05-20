@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'detect_step2',
+    'rest_framework',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -77,9 +79,14 @@ WSGI_APPLICATION = 'kickrani.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'team3',
+        'USER': 'root',
+        'PASSWORD': 'mariadb',
+        'HOST': '3.36.96.187',
+        'PORT': '3306',
     }
+
 }
 
 
