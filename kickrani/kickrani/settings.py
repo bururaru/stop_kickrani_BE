@@ -11,29 +11,17 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 from django.core.exceptions import ImproperlyConfigured
 import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-secret_file = os.path.join(BASE_DIR, 'secrets.json') # secrets.json 파일 위치를 명시
+with open('./secrets.json')as json_file:
+    json_data = json.load(json_file)
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
-
-SECRET_KEY = get_secret("SECRET_KEY")
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+secreat_key = json_data["Django_Server"]
+SECRET_KEY = secreat_key["SECRET_KEY"]
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -41,6 +29,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = False # 추가 안해줄시 기본값이 True인데 그 경우 urls.py에서 경로설정시 주소 끝에 /를 붙이고
+#해당경로로 /를 붙이지 않고 접속시 페이지를 찾을 수 없기때문에 리다이렉트를 시켜 자동으로 /를 붙여서 경로를 찾는다.
+#이 경우 문제가 될 수 있기때문에 false로 값을 지정해줬다.
+
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
 
 # Application definition
 
@@ -54,9 +47,20 @@ INSTALLED_APPS = [
     'detect_step2',
     'rest_framework',
     'app',
+    'corsheaders', # 추가
 ]
 
+# #추가
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+#     ]
+# }
+
 MIDDLEWARE = [
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -90,14 +94,15 @@ WSGI_APPLICATION = 'kickrani.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+db = json_data["DB_Server"]
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'team3',
-        'USER': 'root',
-        'PASSWORD': 'mariadb',
-        'HOST': '3.36.96.187',
-        'PORT': '3306',
+        'ENGINE' : 'django.db.backends.mysql',
+        'NAME' : db["NAME"], # 테이블들이 들어갈 데이터베이스 이름
+        'USER' : db["USER"],
+        'PASSWORD' :db["PASSWORD"],
+        'HOST' : db["HOST"],
+        'PORT' : db["PORT"]
     }
 
 }
