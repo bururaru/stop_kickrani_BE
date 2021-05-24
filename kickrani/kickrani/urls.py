@@ -19,6 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('kickrani/', include('detect_step2.urls')),
+    path('kickrani2/', include('detect_step2.urls')),
     path('kickrani/', include('app.urls')),
 ]
