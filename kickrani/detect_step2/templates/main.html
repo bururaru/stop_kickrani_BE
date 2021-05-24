@@ -5,8 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-    <div>킥라니 멈춰</div>
-    <div>Django 호출 테스트</div>
     <div>{{a}}</div>
+    <form id="detection" method="POST" action="{% url 'detect' %}">
+        {% csrf_token %}
+        <button>DETECT</button>
+    </form>
 </body>
 </html>
