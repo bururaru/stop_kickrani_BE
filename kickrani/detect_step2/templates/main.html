@@ -10,5 +10,9 @@
         {% csrf_token %}
         <button>DETECT</button>
     </form>
+    <form id="socket" method="POST" action="{% url 'socket' %}">
+        {% csrf_token %}
+        <button>SOCKET TEST</button>
+    </form>
 </body>
 </html>

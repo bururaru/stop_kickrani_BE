@@ -13,8 +13,9 @@ from utils.general import check_img_size, check_requirements, check_imshow, non_
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path, save_one_box
 from utils.plots import colors, plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized
-
+from .loadimage import LoadImagesCustom
 from .apps import DetectStep2Config
+from .detection import detect2
 
 
 def main(request):
@@ -37,7 +38,7 @@ def detect(request):
     conf_thres = 0.25
     iou_thres = 0.45
     line_thickness=3
-    hide_conf = True
+    hide_conf = False
     classes = None
     save_conf = True
     agnostic_nms = False
@@ -76,7 +77,7 @@ def detect(request):
 
     # Set Dataloader
     vid_path, vid_writer = None, None
-    dataset = LoadImages(source, img_size=imgsz, stride=stride1)
+    dataset = LoadImagesCustom(source, img_size=imgsz, stride=stride1)
 
     # Run inference
     # if device.type != 'cpu':
