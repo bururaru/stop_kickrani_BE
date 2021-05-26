@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 import argparse
 import time
@@ -22,8 +23,7 @@ def main(request):
     context = {'a' : "킥라니 멈춰! detect 전"}
     return render(request, 'main.html', context)
 
-
-def detect(request):
+def detect(image):
     print("detect 시작")
 
     # Initialize
@@ -227,8 +227,12 @@ def detect(request):
             if save_img:
                 if dataset.mode == 'image':
                     cv2.imwrite(save_path, im0)
-
+    
+    #추후 DB에 집어넣을 부분
+    py_data = {"helmet": len(pred2), "person": len(pred3)}  # Json 형태로 변환
+    json_data = json.dumps(py_data, indent=4) # Json 형태로 변환
+    print(json_data)
+    
     print(f'Done. ({time.time() - t0:.3f}s)')
     print("detect 끝")
     context = {'a': "킥라니 멈춰! detect 후"}
-    return render(request, 'main.html', context)

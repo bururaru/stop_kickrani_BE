@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 import argparse
 import time
@@ -236,4 +237,9 @@ def detect2(frame):
     print(f'Done. ({time.time() - t0:.3f}s)')
     print("detect 끝")
     context = {'a': "킥라니 멈춰! detect 후"}
-    return render(request, 'main.html', context)
+
+    py_data = {"helmet": len(pred2), "person": len(pred3)}  # Json 형태로 변환
+    json_data = json.dumps(py_data, indent=4)  # Json 형태로 변환
+
+    print(json_data)
+    #DB에 저장하는 코드 추가 예정
