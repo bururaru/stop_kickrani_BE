@@ -19,6 +19,7 @@ from .apps import DetectStep2Config
 from .detection import detect2
 
 
+
 def main(request):
     context = {'a' : "킥라니 멈춰! detect 전"}
     return render(request, 'main.html', context)

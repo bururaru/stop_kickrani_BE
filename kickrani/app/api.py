@@ -36,3 +36,30 @@ def kickraniCreate(request):
     if(serializer.is_valid()):
         serializer.save()
     return Response(serializer.data)
+
+@api_view(['POST'])
+def kickraniDB(request):
+    print(request)
+
+    #violation 1:2인이상, 2: 헬멧미착용, 3:2인이상 및 헬멧 미착용 4:
+    if request["person"]>1:
+        if request["person"]!=request["helmet"]:
+            request["violation"] = 3
+        else:
+            request["violation"] = 1
+    else:
+        if request["helmet"]!=1:
+            request["violation"] = 2
+        else:
+            print("정상적인 사용자 입니다")
+            return Response(serializer.data)
+
+    serializer = KickraniSerializer(data=request) #data=request.data
+
+    if(serializer.is_valid()):
+        print('DB 저장 완료')
+        serializer.save()
+    else:
+        print('DB 저장 이상')
+
+    return Response(serializer.data)
