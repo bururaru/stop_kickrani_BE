@@ -1,12 +1,8 @@
 import json
-from django.shortcuts import render
-import argparse
 import time
-from pathlib import Path
-
-import cv2
 import torch
 import torch.backends.cudnn as cudnn
+
 
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
@@ -17,14 +13,19 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 from .loadimage import *
 from .apps import DetectStep2Config
 
-#소켓 통신을 cv2.imdecode()를 인풋으로 받아 실행되는 detection
+import sys
+# sys.path.insert(0, "/app/api.py")
+# sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from app.api import kickraniDB
 
-def detect2(frame):
+# mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
+
+def detect2(frame, c_time):
     print("detect 시작")
     # Initialize
     project = './detect_step2/detect_result'
     name = 'result_img'
-
+    origin_frame = frame
     #테스트용 코드
     # img_loc = './detect_step2/detect_before/maxresdefault.jpg'
     # socket_output = cv2.imread(img_loc)
@@ -112,6 +113,7 @@ def detect2(frame):
     t2 = time_synchronized()
 
     # Process detections 1
+    kick_list = []
     for i, det in enumerate(pred1):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
@@ -144,7 +146,7 @@ def detect2(frame):
                     plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names1[c] / f'{p.stem}.jpg', BGR=True)
-
+            kick_list.append(names1[c])
         # Print time (inference + NMS)
         print(f'{s}Done. ({t2 - t1:.3f}s)')
 
@@ -154,6 +156,7 @@ def detect2(frame):
 
     # Process detections 2
     for i, det in enumerate(pred2):  # detections per image
+        det2 = det
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
         pp = p.name[:-4] + '_2.jpg'
@@ -195,6 +198,7 @@ def detect2(frame):
 
     # Process detections 3
     for i, det in enumerate(pred3):  # detections per image
+        det3 = det
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
         pp = p.name[:-4] + '_3.jpg'
@@ -238,8 +242,8 @@ def detect2(frame):
     print("detect 끝")
     context = {'a': "킥라니 멈춰! detect 후"}
 
-    py_data = {"helmet": len(pred2), "person": len(pred3)}  # Json 형태로 변환
-    json_data = json.dumps(py_data, indent=4)  # Json 형태로 변환
+    py_data = {'brand': str(kick_list),'datetime': c_time,"helmet": len(det2), "person": len(det3)}  # Json 형태로 변환
+    # origin_frame = cv2.cvtColor(origin_frame, cv2.COLOR_BGR2RGB)
+    kickraniDB(py_data, origin_frame)
+    # json_data = json.dumps(py_data, indent=4)  # Json 형태로 변환
 
-    print(json_data)
-    #DB에 저장하는 코드 추가 예정

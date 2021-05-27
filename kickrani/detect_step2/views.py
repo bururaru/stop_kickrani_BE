@@ -23,7 +23,7 @@ def main(request):
     context = {'a' : "킥라니 멈춰! detect 전"}
     return render(request, 'main.html', context)
 
-def detect(image):
+def detect(request):
     print("detect 시작")
 
     # Initialize
@@ -236,3 +236,4 @@ def detect(image):
     print(f'Done. ({time.time() - t0:.3f}s)')
     print("detect 끝")
     context = {'a': "킥라니 멈춰! detect 후"}
+    return render(request, 'main.html', context)

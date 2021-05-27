@@ -1,3 +1,5 @@
+# 삭제 예정
+
 import socket
 import cv2
 import numpy as np
