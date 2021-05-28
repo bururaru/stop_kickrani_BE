@@ -38,10 +38,20 @@ def kickraniCreate(request):
         serializer.save()
     return Response(serializer.data)
 
+#datetim형태 이미지저장명으로 바꾸
+def dateHandler(date):
+    date = date[:22].replace('-', '')
+    date = date.replace(':', '')
+    date = date.replace('.', '')
+    date = date.replace(' ', '')
+    return date
+
 def kickraniDB(request,origin_frame):
     # print('!!',request)
-    cv2.imwrite('image/'+str(1) + '.png', origin_frame)
-    # print(str(1)+'.png'+' 파일이 저장되었습니다')
+    imageName=dateHandler(request["datetime"])
+    cv2.imwrite('image/'+imageName + '.png', origin_frame)
+    request['image']=imageName
+    print(imageName+'.png'+' 파일이 저장되었습니다')
     #violation 1:2인이상, 2: 헬멧미착용, 3:2인이상 및 헬멧 미착용 4:
     if request["person"]>1:
         if request["person"]!=request["helmet"]:
@@ -57,7 +67,6 @@ def kickraniDB(request,origin_frame):
     serializer = KickraniSerializer(data=request) #data=request.data
     if(serializer.is_valid()):
         print('DB 저장 완료')
-        # print('!!!!!!!!!!!!!!!!!!!!db접속!!!!!!!!!!!!!!!!!!!!!!', request, type(request))
         serializer.save()
     else:
         print('false')
