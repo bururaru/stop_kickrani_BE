@@ -7,5 +7,5 @@ urlpatterns = [
     path('main/', views.main),
     path('detect/', views.detect, name='detect'),
     path('detecting', detect_main.socket_receive, name='socket'),
-    path('mqtt', mqtt.receive, name="mqtt")
+    path('', mqtt.receive, name="mqtt")
 ]
