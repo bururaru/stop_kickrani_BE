@@ -33,7 +33,7 @@ def on_message(client, userdata, msg):
         cropped = crop_one_box(xyxy, tmp[0])
         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
         cv2.imshow('ImageWindow', cropped)
-        cv2.waitKey(1)
+        cv2.waitKey(300)
         detect2(tmp[0], tmp[3])
         tmp = []
 
