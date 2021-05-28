@@ -39,7 +39,7 @@ def kickraniCreate(request):
 
 @api_view(['POST'])
 def kickraniDB(request):
-    print(request)
+    print('!!!!!!!!!!!!!!!!!!!!db접속!!!!!!!!!!!!!!!!!!!!!!',request)
 
     #violation 1:2인이상, 2: 헬멧미착용, 3:2인이상 및 헬멧 미착용 4:
     if request["person"]>1:

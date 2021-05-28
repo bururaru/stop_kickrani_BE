@@ -13,9 +13,9 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 from .loadimage import *
 from .apps import DetectStep2Config
 
-import sys
-sys.path.insert(0, "/app/api.py")
-from api import kickraniDB
+# import sys
+# sys.path.insert(0, "/app/api.py")
+from app.api import kickraniDB
 
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
@@ -242,7 +242,7 @@ def detect2(frame, c_time):
     #py_data = {'brand': kick_list,'datetime': c_time,"helmet": len(pred2), "person": len(pred3)  }  # Json 형태로 변환
     py_data = {'brand': kick_list, 'image': frame,'datetime': c_time,"helmet": len(pred2), "person": len(pred3)}  # Json 형태로 변환
     # 이미지는 frame을 가져가시면 됩니다.
-    kickraniDB(py_data)
+    # kickraniDB(py_data)
     json_data = json.dumps(py_data, indent=4)  # Json 형태로 변환
 
     print(json_data)
