@@ -44,7 +44,7 @@
 
 ## About The Project
 
-![banner](../BLANK_README.assets/banner.jpg)
+![](/banner.jpg)
 
 **flow of the data**
 
@@ -131,11 +131,11 @@ Project Link: [https://github.com/bururaru/stop_kickrani_BE](https://github.com/
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/bururaru/repo.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/bururaru/stop_kickrani_BE.svg?style=for-the-badge
 [contributors-url]: https://github.com/bururaru/stop_kickrani_BE/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/bururaru/repo.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/bururaru/stop_kickrani_BE.svg?style=for-the-badge
 [forks-url]: https://github.com/bururaru/stop_kickrani_BE/network/members
-[stars-shield]: https://img.shields.io/github/stars/bururaru/repo.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/bururaru/stop_kickrani_BE.svg?style=for-the-badge
 [stars-url]: https://github.com/bururaru/stop_kickrani_BE/stargazers
-[issues-shield]: https://img.shields.io/github/issues/bururaru/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/bururaru/stop_kickrani_BE.svg?style=for-the-badge
 [issues-url]: https://github.com/bururaru/stop_kickrani_BE/issues
