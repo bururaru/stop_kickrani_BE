@@ -9,7 +9,12 @@ from django.utils.dateformat import DateFormat
 import cv2
 from django.db.models import Count
 import boto3
+import json
 
+with open('./secrets.json')as json_file:
+    json_data = json.load(json_file)
+
+aws = json_data["AWS"]
 
 @api_view(['GET'])
 def kickraniList(request):
@@ -51,18 +56,18 @@ def dateHandler(date):
     return date
 
 def kickraniDB(request,origin_frame):
-    # print('!!',request)
+
     imageName=dateHandler(request["datetime"])
     cv2.imwrite('image/'+imageName + '.png', origin_frame)
 
     file_name='image/'+imageName + '.png'
-    bucket='team03-s3'
+    bucket=aws["bucket"]
     key='image/'+imageName + '.png'
 
     s3=boto3.client(
         's3',
-        aws_access_key_id='AKIA5VZTIAOJRZRX4DZD',
-        aws_secret_access_key='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',
+        aws_access_key_id=aws["aws_access_key_id"],
+        aws_secret_access_key=aws["aws_secret_access_key"],
     )
     s3.upload_file(
         file_name,
