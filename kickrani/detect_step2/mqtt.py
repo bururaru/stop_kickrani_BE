@@ -32,9 +32,9 @@ def on_message(client, userdata, msg):
         xyxy = torch.tensor([[float(tmp[1][0]), float(tmp[1][1]), float(tmp[2][0]), float(tmp[2][1])]])
         cropped = crop_one_box(xyxy, tmp[0])
         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
-        cv2.imshow('ImageWindow', cropped)
-        cv2.waitKey(300)
-        detect2(tmp[0], tmp[3])
+        # cv2.imshow('ImageWindow', cropped)
+        # cv2.waitKey(300)
+        detect2(cropped, tmp[3])
         tmp = []
 
     if (msg.topic == "image") & (len(tmp) == 0):

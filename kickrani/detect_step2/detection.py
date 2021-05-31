@@ -26,10 +26,6 @@ def detect2(frame, c_time):
     project = './detect_step2/detect_result'
     name = 'result_img'
     origin_frame = frame
-    #테스트용 코드
-    # img_loc = './detect_step2/detect_before/maxresdefault.jpg'
-    # socket_output = cv2.imread(img_loc)
-    # source = socket_output
     source = frame
     save_img = True
     view_img = False
@@ -144,12 +140,14 @@ def detect2(frame, c_time):
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names1[c] if hide_conf else f'{names1[c]} {conf:.2f}')
-                    plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
-                    if save_crop:
-                        save_one_box(xyxy, imc, file=save_dir / 'crops' / names1[c] / f'{p.stem}.jpg', BGR=True)
+                    plot_one_box(xyxy, im0, label=label, color=[255,255,0], line_thickness=line_thickness)
+                    # if save_crop:
+                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names1[c] / f'{p.stem}.jpg', BGR=True)
             kick_list.append(names1[c])
             kick_prob.append(float(conf))
         # Print time (inference + NMS)
+        cv2.imshow('ImageWindow', im0)
+        cv2.waitKey(200)
         print(f'{s}Done. ({t2 - t1:.3f}s)')
 
         # Save results (image with detections)
@@ -186,10 +184,12 @@ def detect2(frame, c_time):
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names2[c] if hide_conf else f'{names2[c]} {conf:.2f}')
-                    plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
-                    if save_crop:
-                        save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
+                    plot_one_box(xyxy, im0, label=label, color=[255,0,0], line_thickness=line_thickness)
+                    # if save_crop:
+                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
         num_helmet = int(n2)
+        cv2.imshow('ImageWindow', im0)
+        cv2.waitKey(200)
         # Print time (inference + NMS)
         print(f'{s}Done. ({t2 - t1:.3f}s)')
 
@@ -227,11 +227,13 @@ def detect2(frame, c_time):
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names3[c] if hide_conf else f'{names3[c]} {conf:.2f}')
-                    plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
-                    if save_crop:
-                        save_one_box(xyxy, imc, file=save_dir / 'crops' / names3[c] / f'{p.stem}.jpg', BGR=True)
+                    plot_one_box(xyxy, im0, label=label, color=[0, 0, 255], line_thickness=line_thickness)
+                    # if save_crop:
+                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names3[c] / f'{p.stem}.jpg', BGR=True)
         num_person = int(n3)
         # Print time (inference + NMS)
+        cv2.imshow('ImageWindow', im0)
+        cv2.waitKey(200)
         print(f'{s}Done. ({t2 - t1:.3f}s)')
 
         # Save results (image with detections)
