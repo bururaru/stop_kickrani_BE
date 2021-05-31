@@ -146,7 +146,7 @@ def detect2(frame, c_time):
             kick_list.append(names1[c])
             kick_prob.append(float(conf))
         # Print time (inference + NMS)
-        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
 
@@ -188,7 +188,7 @@ def detect2(frame, c_time):
                     # if save_crop:
                     #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
         num_helmet = int(n2)
-        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
 
@@ -230,7 +230,7 @@ def detect2(frame, c_time):
                     # if save_crop:
                     #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names3[c] / f'{p.stem}.jpg', BGR=True)
         num_person = int(n3)
-        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
 
