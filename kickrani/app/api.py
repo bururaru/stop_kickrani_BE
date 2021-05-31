@@ -7,6 +7,9 @@ from .serializer import AnnualChartSerializer
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 import cv2
+from django.db.models import Count
+import boto3
+
 
 @api_view(['GET'])
 def kickraniList(request):
@@ -16,9 +19,10 @@ def kickraniList(request):
 
 @api_view(['GET'])
 def dailyChart(request):
-    now = DateFormat(datetime.now()).format('Ymd')
-    now=now[:4]+'-'+now[4:6]+'-'+now[6:8] #2021-05-21 형태로 만들기 위한 코드
-    chart = Kickrani.objects.filter(datetime__contains=now)
+    # now = DateFormat(datetime.now()).format('Ymd')
+    # now=now[:4]+'-'+now[4:6]+'-'+now[6:8] #2021-05-21 형태로 만들기 위한 코드
+    # chart = Kickrani.objects.filter(brand__contains=now)
+    chart = Kickrani.objects.values('brand').annotate(num_brand=Count('brand')).order_by('brand')
     serializer = DailyChartSerializer(chart, many=True)
     return Response(serializer.data)
 
@@ -50,8 +54,30 @@ def kickraniDB(request,origin_frame):
     # print('!!',request)
     imageName=dateHandler(request["datetime"])
     cv2.imwrite('image/'+imageName + '.png', origin_frame)
+
+    file_name='image/'+imageName + '.png'
+    bucket='team03-s3'
+    key='image/'+imageName + '.png'
+
+    s3=boto3.client(
+        's3',
+        aws_access_key_id='AKIA5VZTIAOJRZRX4DZD',
+        aws_secret_access_key='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',
+    )
+    s3.upload_file(
+        file_name,
+        bucket,
+        key,
+        ExtraArgs={
+            "ContentType": 'image/png',
+        }
+    )
+
     request['image']=imageName
+    request['location'] = "강남역"  #장소 임의로 추가
+
     print(imageName+'.png'+' 파일이 저장되었습니다')
+
     #violation 1:2인이상, 2: 헬멧미착용, 3:2인이상 및 헬멧 미착용 4:
     if request["person"]>1:
         if request["person"]!=request["helmet"]:

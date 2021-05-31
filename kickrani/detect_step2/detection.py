@@ -21,7 +21,7 @@ from app.api import kickraniDB
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
 def detect2(frame, c_time):
-    print("detect 시작")
+    # print("detect 시작")
     # Initialize
     project = './detect_step2/detect_result'
     name = 'result_img'
@@ -32,8 +32,8 @@ def detect2(frame, c_time):
     save_txt = False
     augment = False
     imgsz = 352
-    conf_thres = 0.25
-    iou_thres = 0.45
+    conf_thres = 0.7
+    iou_thres = 0.7
     line_thickness=3
     hide_conf = False
     classes = None
@@ -73,6 +73,7 @@ def detect2(frame, c_time):
     classify = False
 
     # Set Dataloader
+    t0 = time.time()
     vid_path, vid_writer = None, None
     dataset = custom_load(source)
     # print(len(dataset))
@@ -84,7 +85,6 @@ def detect2(frame, c_time):
     # Run inference
     # if device.type != 'cpu':
     #     model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
-    t0 = time.time()
     path = dataset[0]
     img = dataset[1]
     im0s = dataset[2]
@@ -146,9 +146,9 @@ def detect2(frame, c_time):
             kick_list.append(names1[c])
             kick_prob.append(float(conf))
         # Print time (inference + NMS)
-        cv2.imshow('ImageWindow', im0)
+        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
-        print(f'{s}Done. ({t2 - t1:.3f}s)')
 
         # Save results (image with detections)
         if save_img:
@@ -188,10 +188,9 @@ def detect2(frame, c_time):
                     # if save_crop:
                     #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
         num_helmet = int(n2)
-        cv2.imshow('ImageWindow', im0)
+        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
-        # Print time (inference + NMS)
-        print(f'{s}Done. ({t2 - t1:.3f}s)')
 
         # Save results (image with detections)
         if save_img:
@@ -231,21 +230,17 @@ def detect2(frame, c_time):
                     # if save_crop:
                     #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names3[c] / f'{p.stem}.jpg', BGR=True)
         num_person = int(n3)
-        # Print time (inference + NMS)
-        cv2.imshow('ImageWindow', im0)
+        imc = cv2.resize(im0, dsize=(640, 480), interpolation=cv2.INTER_AREA)
+        cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
-        print(f'{s}Done. ({t2 - t1:.3f}s)')
-
-        # Save results (image with detections)
-        # if save_img:
-        #     cv2.imwrite(save_path, im0)
 
     print(f'Done. ({time.time() - t0:.3f}s)')
-    print("detect 끝")
+    # print("detect 끝")
     print(f'사람 수{num_person}, 헬멧 수{num_helmet}')
     # 정확도가 가장 높게 나온 킥보드 브랜드 하나만 반환
     if kick_list:
         kick_list = kick_list[kick_prob.index(max(kick_prob))]
+        print(f'킥보드 브랜드 : {kick_list}')
         # 헬멧 수보다 사람 수가 많으면 위반 ( 사람수가 3 이상으로 많은 숫자로 탐지되어도 동일하게 적용)
         if num_helmet < num_person:
             print("위반!!!!!!!!!!!!!!!!!!!!!")

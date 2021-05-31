@@ -45,7 +45,7 @@ def on_message(client, userdata, msg):
 
     elif (msg.topic == "json") & (len(tmp) == 1):
         input_json = str(msg.payload.decode("utf-8"))
-        print(input_json)
+        # print(input_json)
         cord = json.loads(msg.payload)
         time = cord['time']
         cord = cord['cord']
