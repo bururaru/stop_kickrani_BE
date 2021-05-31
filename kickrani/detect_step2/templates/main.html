@@ -5,8 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-    <div>킥라니 멈춰</div>
-    <div>Django 호출 테스트</div>
     <div>{{a}}</div>
+    <form id="detection" method="POST" action="{% url 'detect' %}">
+        {% csrf_token %}
+        <button>DETECT(TEST)</button>
+        <div>DETECT 버튼은 추후 삭제 필수</div>
+    </form>
+    <form id="mqtt" method="POST" action="{% url 'mqtt' %}">
+        {% csrf_token %}
+        <button>MQTT SUBSCRIBE</button>
+    </form>
 </body>
 </html>
