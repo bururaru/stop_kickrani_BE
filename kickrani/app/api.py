@@ -6,8 +6,6 @@ from .serializer import DailyChartSerializer
 from .serializer import AnnualChartSerializer
 from datetime import datetime
 from django.utils.dateformat import DateFormat
-<<<<<<< HEAD
-=======
 import cv2
 from django.db.models import Count
 import boto3
@@ -17,7 +15,6 @@ with open('./secrets.json')as json_file:
     json_data = json.load(json_file)
 
 aws = json_data["AWS"]
->>>>>>> root_main
 
 @api_view(['GET'])
 def kickraniList(request):
@@ -27,16 +24,10 @@ def kickraniList(request):
 
 @api_view(['GET'])
 def dailyChart(request):
-<<<<<<< HEAD
-    now = DateFormat(datetime.now()).format('Ymd')
-    now=now[:4]+'-'+now[4:6]+'-'+now[6:8] #2021-05-21 형태로 만들기 위한 코드
-    chart = Kickrani.objects.filter(datetime__contains=now)
-=======
     # now = DateFormat(datetime.now()).format('Ymd')
     # now=now[:4]+'-'+now[4:6]+'-'+now[6:8] #2021-05-21 형태로 만들기 위한 코드
     # chart = Kickrani.objects.filter(brand__contains=now)
     chart = Kickrani.objects.values('brand').annotate(num_brand=Count('brand')).order_by('brand')
->>>>>>> root_main
     serializer = DailyChartSerializer(chart, many=True)
     return Response(serializer.data)
 
@@ -55,8 +46,6 @@ def kickraniCreate(request):
     if(serializer.is_valid()):
         serializer.save()
     return Response(serializer.data)
-<<<<<<< HEAD
-=======
 
 #datetim형태 이미지저장명으로 바꾸
 def dateHandler(date):
@@ -113,4 +102,3 @@ def kickraniDB(request,origin_frame):
     else:
         print('false')
     return Response(serializer.data)
->>>>>>> root_main
