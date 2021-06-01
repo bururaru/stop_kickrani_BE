@@ -34,7 +34,7 @@ def on_message(client, userdata, msg):
         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
         # cv2.imshow('ImageWindow', cropped)
         # cv2.waitKey(300)
-        detect2(cropped, tmp[3])
+        detect2(frame=cropped, c_time=tmp[3], origin_frame=tmp[0])
         tmp = []
 
     if (msg.topic == "image") & (len(tmp) == 0):

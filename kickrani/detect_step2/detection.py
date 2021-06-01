@@ -20,12 +20,11 @@ from app.api import kickraniDB
 
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
-def detect2(frame, c_time):
+def detect2(frame, c_time, origin_frame):
     # print("detect 시작")
     # Initialize
     project = './detect_step2/detect_result'
     name = 'result_img'
-    origin_frame = frame
     source = frame
     save_img = True
     view_img = False
