@@ -31,7 +31,7 @@ def detect2(frame, c_time, origin_frame):
     save_txt = False
     augment = False
     imgsz = 352
-    conf_thres = 0.7
+    conf_thres = 0.75
     iou_thres = 0.7
     line_thickness=3
     hide_conf = False
@@ -170,8 +170,9 @@ def detect2(frame, c_time, origin_frame):
 
             # Print results
             for c in det[:, -1].unique():
-                n2 = (det[:, -1] == c).sum()  # detections per class
-                s += f"{n2} {names2[int(c)]}{'s' * (n2 > 1)}, "  # add to string
+                if int(c) == 0:
+                    n2 = (det[:, -1] == c).sum()  # detections per class
+                    s += f"{n2} {names2[int(c)]}{'s' * (n2 > 1)}, "  # add to string
             # Write results
             for *xyxy, conf, cls in reversed(det):
                 if save_txt:  # Write to file
@@ -186,10 +187,11 @@ def detect2(frame, c_time, origin_frame):
                     plot_one_box(xyxy, im0, label=label, color=[255,0,0], line_thickness=line_thickness)
                     # if save_crop:
                     #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
+            if int(c) == 0:
+                imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
+                cv2.imshow('ImageWindow', imc)
+                cv2.waitKey(200)
         num_helmet = int(n2)
-        imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
-        cv2.imshow('ImageWindow', imc)
-        cv2.waitKey(200)
 
         # Save results (image with detections)
         if save_img:
