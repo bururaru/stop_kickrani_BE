@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Kickrani
+from .models import Rider
+from .models import Violation
 from django.db.models import Count
 
 class KickraniSerializer(serializers.ModelSerializer) :
@@ -17,3 +19,14 @@ class AnnualChartSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Kickrani
         fields = ['kickId','brand','datetime']
+
+class RiderSerializer(serializers.ModelSerializer) :
+    class Meta:
+        model = Rider
+        fields = ['riderLocation','riderPercentage']
+
+class ViolationSerializer(serializers.ModelSerializer) :
+    class Meta:
+        model = Violation
+        fields = ['helmetLocation','personLocation','personPercentage']
+

@@ -24,6 +24,7 @@ with open('./secrets.json')as json_file:
 secreat_key = json_data["Django_Server"]
 SECRET_KEY = secreat_key["SECRET_KEY"]
 
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
