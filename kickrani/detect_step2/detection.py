@@ -110,6 +110,10 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     # Process detections kickboard
     kick_list = []
     kick_prob = []
+    helmet_loc = []
+    helmet_prob = []
+    person_loc = []
+    person_prob = []
     for i, det in enumerate(pred1):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
@@ -140,8 +144,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names1[c] if hide_conf else f'{names1[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[255,255,0], line_thickness=line_thickness)
-                    # if save_crop:
-                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names1[c] / f'{p.stem}.jpg', BGR=True)
             kick_list.append(names1[c])
             kick_prob.append(float(conf))
         # Print time (inference + NMS)
@@ -186,8 +188,8 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                     label = None if hide_labels else (names2[c] if hide_conf else f'{names2[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[255,0,0], line_thickness=line_thickness)
             if int(c) == 0:
-                helmet_loc = [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])]
-                helmet_prob = float(conf)
+                helmet_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
+                helmet_prob.append(float(conf))
                 imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
                 cv2.imshow('ImageWindow', imc)
                 cv2.waitKey(200)
@@ -229,8 +231,8 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                     label = None if hide_labels else (names3[c] if hide_conf else f'{names3[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[0, 0, 255], line_thickness=line_thickness)
         num_person = int(n3)
-        person_loc = [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])]
-        person_prob = float(conf)
+        person_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
+        person_prob.append(float(conf))
         imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
