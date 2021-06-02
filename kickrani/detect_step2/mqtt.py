@@ -22,19 +22,12 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 def on_message(client, userdata, msg):
     global tmp
-    if len(tmp) == 4:
-        # 테스트 코드
-        # cv2.rectangle(tmp[0], tmp[1], tmp[2], (255,0,0), thickness=3, lineType=cv2.LINE_AA)
-        # cv2.imshow('ImageWindow', tmp[0])
-        # cv2.waitKey(10)
-        #테스트 코드
-
+    if len(tmp) == 5:
         xyxy = torch.tensor([[float(tmp[1][0]), float(tmp[1][1]), float(tmp[2][0]), float(tmp[2][1])]])
         cropped = crop_one_box(xyxy, tmp[0])
         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
-        # cv2.imshow('ImageWindow', cropped)
-        # cv2.waitKey(300)
-        detect2(frame=cropped, c_time=tmp[3], origin_frame=tmp[0])
+        loc = [tmp[1], tmp[2]]
+        detect2(frame=cropped, frame_loc=loc, frame_prob=tmp[3], c_time=tmp[4], origin_frame=tmp[0])
         tmp = []
 
     if (msg.topic == "image") & (len(tmp) == 0):
@@ -44,15 +37,16 @@ def on_message(client, userdata, msg):
         tmp.append(img)
 
     elif (msg.topic == "json") & (len(tmp) == 1):
-        input_json = str(msg.payload.decode("utf-8"))
-        # print(input_json)
-        cord = json.loads(msg.payload)
-        time = cord['time']
-        cord = cord['cord']
+        cntxt = json.loads(msg.payload)
+        time = cntxt['time']   # tmp[4]
+        prob = cntxt['prob']   # tmp[3]
+        cord = cntxt['cord']   # tmp[1], tmp[2]
         c1 = cord[0]
         c2 = cord[1]
+        c3 = prob
         tmp.append(c1)
         tmp.append(c2)
+        tmp.append(c3)
         tmp.append(time)
 
 def receive(request):

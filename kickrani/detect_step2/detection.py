@@ -20,7 +20,7 @@ from app.api import kickraniDB
 
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
-def detect2(frame, c_time, origin_frame):
+def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     # print("detect 시작")
     # Initialize
     project = './detect_step2/detect_result'
@@ -107,7 +107,7 @@ def detect2(frame, c_time, origin_frame):
     pred3 = non_max_suppression(pred3, conf_thres, iou_thres, classes, agnostic_nms)
     t2 = time_synchronized()
 
-    # Process detections 1
+    # Process detections kickboard
     kick_list = []
     kick_prob = []
     for i, det in enumerate(pred1):  # detections per image
@@ -153,7 +153,7 @@ def detect2(frame, c_time, origin_frame):
         if save_img:
             cv2.imwrite(save_path, im0)
 
-    # Process detections 2
+    # Process detections helmet
     for i, det in enumerate(pred2):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
@@ -185,9 +185,9 @@ def detect2(frame, c_time, origin_frame):
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names2[c] if hide_conf else f'{names2[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[255,0,0], line_thickness=line_thickness)
-                    # if save_crop:
-                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names2[c] / f'{p.stem}.jpg', BGR=True)
             if int(c) == 0:
+                helmet_loc = [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])]
+                helmet_prob = float(conf)
                 imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
                 cv2.imshow('ImageWindow', imc)
                 cv2.waitKey(200)
@@ -197,7 +197,7 @@ def detect2(frame, c_time, origin_frame):
         if save_img:
             cv2.imwrite(save_path, im0)
 
-    # Process detections 3
+    # Process detections person
     for i, det in enumerate(pred3):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
@@ -228,9 +228,9 @@ def detect2(frame, c_time, origin_frame):
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names3[c] if hide_conf else f'{names3[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[0, 0, 255], line_thickness=line_thickness)
-                    # if save_crop:
-                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names3[c] / f'{p.stem}.jpg', BGR=True)
         num_person = int(n3)
+        person_loc = [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])]
+        person_prob = float(conf)
         imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
@@ -245,7 +245,10 @@ def detect2(frame, c_time, origin_frame):
         # 헬멧 수보다 사람 수가 많으면 위반 ( 사람수가 3 이상으로 많은 숫자로 탐지되어도 동일하게 적용)
         if num_helmet < num_person:
             print("위반!!!!!!!!!!!!!!!!!!!!!")
-            py_data = {'brand': str(kick_list), 'datetime': c_time, "helmet": num_helmet, "person": num_person}  # Json 형태로 변환
+            py_data = {'brand': str(kick_list), 'datetime': c_time, "helmet": num_helmet, "person": num_person,
+                       "rider_location": frame_loc, "rider_percentage": frame_prob,
+                       "helmet_location": helmet_loc, "helmet_percentage": helmet_prob,
+                       "person_location": person_loc, "person_percentage": person_prob}  # Json 형태로 변환
             kickraniDB(py_data, origin_frame)
     else:
         print("위반 아님")
