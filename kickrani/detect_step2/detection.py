@@ -16,8 +16,9 @@ from .apps import DetectStep2Config
 import sys
 # sys.path.insert(0, "/app/api.py")
 # sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from app.api import kickraniDB
-
+from app.api import imageDB
+from app.api import riderDB
+from app.api import informationDB
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
 def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
@@ -247,10 +248,12 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         # 헬멧 수보다 사람 수가 많으면 위반 ( 사람수가 3 이상으로 많은 숫자로 탐지되어도 동일하게 적용)
         if num_helmet < num_person:
             print("위반!!!!!!!!!!!!!!!!!!!!!")
-            py_data = {'brand': str(kick_list), 'datetime': c_time, "helmet": num_helmet, "person": num_person,
-                       "rider_location": frame_loc, "rider_percentage": frame_prob,
-                       "helmet_location": helmet_loc, "helmet_percentage": helmet_prob,
-                       "person_location": person_loc, "person_percentage": person_prob}  # Json 형태로 변환
-            kickraniDB(py_data, origin_frame)
+            py_data1 = {'datetime': c_time, "location": "강남역", "rider_number": num_person}  # Json 형태로 변환
+            py_data2={"rider_location": str(frame_loc), "rider_percentage": frame_prob,'brand': str(kick_list),"helmet": num_helmet,"person": num_person}
+            py_data3={"helmet_location": str(helmet_loc), "helmet_percentage": helmet_prob,"person_location": str(person_loc), "person_percentage": person_prob}
+
+            imageDB(py_data1, origin_frame)
+            riderDB(py_data2)
+            informationDB(py_data3)
     else:
         print("위반 아님")

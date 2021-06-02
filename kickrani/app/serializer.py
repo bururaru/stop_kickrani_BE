@@ -1,32 +1,31 @@
 from rest_framework import serializers
-from .models import Kickrani
 from .models import Rider
-from .models import Violation
+from .models import Image
+from .models import Rider_information
 from django.db.models import Count
 
-class KickraniSerializer(serializers.ModelSerializer) :
+class ImageSerializer(serializers.ModelSerializer) :
     class Meta:
-        model = Kickrani
-        fields = ['kickId','brand','violation','image','datetime','helmet','location','person']
-
-
-class DailyChartSerializer(serializers.ModelSerializer) :
-    class Meta:
-        model = Kickrani
-        fields = ['brand', 'num_brand']
-
-class AnnualChartSerializer(serializers.ModelSerializer) :
-    class Meta:
-        model = Kickrani
-        fields = ['kickId','brand','datetime']
+        model = Image
+        fields = ['image_ID','datetime','location','rider_number']
 
 class RiderSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Rider
-        fields = ['riderLocation','riderPercentage']
+        fields = ['Rider_ID','image_ID','rider_location','rider_percentage','brand','helmet_number','person_number','datetime','foul','num_brand','location']
 
-class ViolationSerializer(serializers.ModelSerializer) :
+
+class InformationSerializer(serializers.ModelSerializer) :
     class Meta:
-        model = Violation
-        fields = ['helmetLocation','personLocation','personPercentage']
+        model = Rider_information
+        fields = ['helmetLocation','helmetPercentage','personLocation','personPercentage']
 
+class DailyChartSerializer(serializers.ModelSerializer) :
+    class Meta:
+        model = Rider
+        fields = ['brand', 'num_brand']
+
+class AnnualChartSerializer(serializers.ModelSerializer) :
+    class Meta:
+        model = Rider
+        fields = ['rider_ID','brand','datetime']
