@@ -79,20 +79,20 @@ This is the project detect the illegal electric scooter rider on the public stre
 
 ### Architecture
 
-![stop_kickrani](readme.assets/120502017-08665b00-c3fd-11eb-87ba-bd3c3c6bd385.png)
+![](https://user-images.githubusercontent.com/45448869/120573177-201efd00-c458-11eb-9e45-4a5b39421264.png)
 
 ## Trained Indicators
 
 | Model | number of dataset | mAP<sup>val<br>0.5 | mAP<sup>test<br>0.5|
 | ----------------- | --------------------- | ----------------------- | ------------------------ |
-| Rider (x) | 983 | 0.981 | - |
+| Rider (x) | 983 | 0.981 | 0.955 |
 | Kickboard (m)| 1500| 0.94 | 0.843 |
 | Person (s) | 712 | 0.992 | 0.978 |
 | helmet (m) | 629 | 0.984 | - |
 
 ![](https://user-images.githubusercontent.com/45448869/120500749-0b148080-c3fc-11eb-9220-14953a88b572.gif)
 
-![person](readme.assets/120500745-09e35380-c3fc-11eb-96d0-838e13a10c13.gif)
+![](https://user-images.githubusercontent.com/45448869/120500745-09e35380-c3fc-11eb-96d0-838e13a10c13.gif)
 
 ![](https://user-images.githubusercontent.com/45448869/120500741-08b22680-c3fc-11eb-88f3-ce37c9f6906e.gif)
 
