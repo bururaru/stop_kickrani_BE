@@ -96,7 +96,7 @@ This is the project detect the illegal electric scooter rider on the public stre
 
 ![](https://user-images.githubusercontent.com/45448869/120500741-08b22680-c3fc-11eb-88f3-ce37c9f6906e.gif)
 
-
+![helmet](readme.assets/120592863-823c2a00-c479-11eb-86ac-d953b6b64ae1.gif)
 
 <!-- GETTING STARTED -->
 
