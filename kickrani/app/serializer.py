@@ -12,13 +12,13 @@ class ImageSerializer(serializers.ModelSerializer) :
 class RiderSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Rider
-        fields = ['Rider_ID','image_ID','rider_location','rider_percentage','brand','helmet_number','person_number','datetime','foul','num_brand','location']
+        fields = ['rider_ID','image_ID','rider_location','rider_percentage','brand','helmet_number','person_number','datetime','foul','num_brand','location']
 
 
 class InformationSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Rider_information
-        fields = ['helmetLocation','helmetPercentage','personLocation','personPercentage']
+        fields = ['information_Id','rider_ID','helmet_location','helmet_percentage','person_location','person_percentage']
 
 class DailyChartSerializer(serializers.ModelSerializer) :
     class Meta:
