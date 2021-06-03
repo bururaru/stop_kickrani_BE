@@ -7,7 +7,7 @@ class DetectStep2Config(AppConfig):
     name = 'detect_step2'
 
     weights1 = './kickboard.pt'
-    weights2 = './helmet.pt'
+    weights2 = './2helmet.pt'
     weights3 = './person.pt'
     device = ''
     device = select_device(device)
