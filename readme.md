@@ -55,7 +55,7 @@
 
 ## About The Project
 
-This is the project detect the illegal electric scooter rider on the public street with unmanned device. And this **repository** contains the 2nd part of the detection (number of person/helmet, kickboard brand). It receive the rider data from **jetson nano** and detect the object with **YOLOv5** model and send the data to Database.
+This is the project detecting illegal electric scooter riders on the public street with unmanned device. And this **repository** contains the 2nd part of the detection (number of person/helmet, kickboard brand). It receives the rider data from **jetson nano** and detects the object with **YOLOv5** model and sends the data to Database.
 
 ![](/banner.jpg)
 
