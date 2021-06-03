@@ -16,8 +16,9 @@ from .apps import DetectStep2Config
 import sys
 # sys.path.insert(0, "/app/api.py")
 # sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from app.api import kickraniDB
-
+from app.api import imageDB
+from app.api import riderDB
+from app.api import informationDB
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
 
 def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
@@ -134,12 +135,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
 
             # Write results
             for *xyxy, conf, cls in reversed(det):
-                if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                    with open(txt_path + '.txt', 'a') as f:
-                        f.write(('%g ' * len(line)).rstrip() % line + '\n')
-
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names1[c] if hide_conf else f'{names1[c]} {conf:.2f}')
@@ -156,6 +151,7 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
             cv2.imwrite(save_path, im0)
 
     # Process detections helmet
+    n2 = 0
     for i, det in enumerate(pred2):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
         p = Path(p)  # to Path
@@ -165,40 +161,36 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         s += '%gx%g ' % img.shape[2:]  # print string
         gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
         imc = im0.copy() if save_crop else im0  # for opt.save_crop
-        n2 = 0
         if len(det):
             # Rescale boxes from img_size to im0 size
             det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-
             # Print results
             for c in det[:, -1].unique():
+                ishelmet = False
                 if int(c) == 0:
+                    ishelmet = True
                     n2 = (det[:, -1] == c).sum()  # detections per class
+                    print(n2)
                     s += f"{n2} {names2[int(c)]}{'s' * (n2 > 1)}, "  # add to string
             # Write results
             for *xyxy, conf, cls in reversed(det):
-                if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                    with open(txt_path + '.txt', 'a') as f:
-                        f.write(('%g ' * len(line)).rstrip() % line + '\n')
-
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names2[c] if hide_conf else f'{names2[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[255,0,0], line_thickness=line_thickness)
-            if int(c) == 0:
-                helmet_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
-                helmet_prob.append(float(conf))
-                imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
-                cv2.imshow('ImageWindow', imc)
-                cv2.waitKey(200)
+                if ishelmet:
+                    helmet_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
+                    helmet_prob.append(float(conf))
+                    imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
+                    cv2.imshow('ImageWindow', imc)
+                    cv2.waitKey(200)
         num_helmet = int(n2)
 
         # Save results (image with detections)
         if save_img:
             cv2.imwrite(save_path, im0)
 
+    n3 = 0
     # Process detections person
     for i, det in enumerate(pred3):  # detections per image
         p, s, im0, frame = path, '', im0s.copy(), getattr(dataset, 'frame', 0)
@@ -220,26 +212,25 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                 s += f"{n3} {names3[int(c)]}{'s' * (n3 > 1)}, "  # add to string
             # Write results
             for *xyxy, conf, cls in reversed(det):
-                if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                    with open(txt_path + '.txt', 'a') as f:
-                        f.write(('%g ' * len(line)).rstrip() % line + '\n')
-
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names3[c] if hide_conf else f'{names3[c]} {conf:.2f}')
                     plot_one_box(xyxy, im0, label=label, color=[0, 0, 255], line_thickness=line_thickness)
+                person_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
+                person_prob.append(float(conf))
+                imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
+                cv2.imshow('ImageWindow', imc)
+                cv2.waitKey(200)
         num_person = int(n3)
-        person_loc.append([int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])])
-        person_prob.append(float(conf))
-        imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
-        cv2.imshow('ImageWindow', imc)
-        cv2.waitKey(200)
 
     print(f'Done. ({time.time() - t0:.3f}s)')
     # print("detect 끝")
-    print(f'사람 수{num_person}, 헬멧 수{num_helmet}')
+    # if num_person:
+    print(f'사람 수 : {num_person}')
+    # elif num_helmet:
+    print(f'헬멧 수 : {num_helmet}')
+    # else:
+    #     print("사람, 헬멧 탐지 안됨!")
     # 정확도가 가장 높게 나온 킥보드 브랜드 하나만 반환
     if kick_list:
         kick_list = kick_list[kick_prob.index(max(kick_prob))]
@@ -247,10 +238,12 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         # 헬멧 수보다 사람 수가 많으면 위반 ( 사람수가 3 이상으로 많은 숫자로 탐지되어도 동일하게 적용)
         if num_helmet < num_person:
             print("위반!!!!!!!!!!!!!!!!!!!!!")
-            py_data = {'brand': str(kick_list), 'datetime': c_time, "helmet": num_helmet, "person": num_person,
-                       "rider_location": frame_loc, "rider_percentage": frame_prob,
-                       "helmet_location": helmet_loc, "helmet_percentage": helmet_prob,
-                       "person_location": person_loc, "person_percentage": person_prob}  # Json 형태로 변환
-            kickraniDB(py_data, origin_frame)
+            py_data1 = {'datetime': c_time, "location": "강남역", "rider_number": num_person}  # Json 형태로 변환
+            py_data2={"rider_location": str(frame_loc), "rider_percentage": frame_prob,'brand': str(kick_list),"helmet_number": num_helmet,"person_number": num_person}
+            py_data3={"helmet_location": str(helmet_loc), "helmet_percentage": helmet_prob,"person_location": str(person_loc), "person_percentage": person_prob}
+
+            imageDB(py_data1, origin_frame)
+            riderDB(py_data2)
+            informationDB(py_data3)
     else:
         print("위반 아님")
