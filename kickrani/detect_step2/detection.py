@@ -170,7 +170,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                 if int(c) == 0:
                     ishelmet = True
                     n2 = (det[:, -1] == c).sum()  # detections per class
-                    print(n2)
                     s += f"{n2} {names2[int(c)]}{'s' * (n2 > 1)}, "  # add to string
             # Write results
             for *xyxy, conf, cls in reversed(det):
