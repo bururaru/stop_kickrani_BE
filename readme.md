@@ -21,10 +21,19 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
+        <ul>
+        <li><a href="">Used Deivce</a></li>
+       </ul>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
+       <ul>
+        <li><a href="">Architecture</a></li>
+       </ul>
     </li>
+    <li>
+      <a href="#about-the-project">Trained Indicators</a>
+    </li>  
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
@@ -40,25 +49,52 @@
 
 
 
+
+
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
+This is the project detect the illegal electric scooter rider on the public street with unmanned device. And this **repository** contains the 2nd part of the detection (number of person/helmet, kickboard brand). It receive the rider data from **jetson nano** and detect the object with **YOLOv5** model and send the data to Database.
+
 ![](/banner.jpg)
 
-**flow of the data**
+### Used Device
 
-- Jetson nano -> **AWS EC2 with GPU(this repository)** -> mysql
+- **AWS EC2 with GPU**
 - GPU : NVIDIA M60 8GB
 
 
 ### Built With
 
 * [Python 3.8.10](https://www.python.org/)
+
 * [Django 3.2.3](https://www.djangoproject.com/)
+
 * [pytorch 1.8.1](https://pytorch.org/)
+
 * [YOLOv5](https://github.com/ultralytics/yolov5)
+
 * [MQTT](https://mqtt.org/)
+
+### Architecture
+
+![stop_kickrani](readme.assets/120502017-08665b00-c3fd-11eb-87ba-bd3c3c6bd385.png)
+
+## Trained Indicators
+
+| Model | number of dataset | mAP<sup>val<br>0.5 | mAP<sup>test<br>0.5|
+| ----------------- | --------------------- | ----------------------- | ------------------------ |
+| Rider (x) | 983 | 0.981 | - |
+| Kickboard (m)| 1500| 0.94 | 0.843 |
+| Person (s) | 712 | 0.992 | 0.978 |
+| helmet (m) | 629 | 0.984 | - |
+
+![](https://user-images.githubusercontent.com/45448869/120500749-0b148080-c3fc-11eb-9220-14953a88b572.gif)
+
+![person](readme.assets/120500745-09e35380-c3fc-11eb-96d0-838e13a10c13.gif)
+
+![](https://user-images.githubusercontent.com/45448869/120500741-08b22680-c3fc-11eb-88f3-ce37c9f6906e.gif)
 
 
 
