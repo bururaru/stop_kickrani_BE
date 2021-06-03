@@ -2,8 +2,6 @@ import json
 import time
 import torch
 import torch.backends.cudnn as cudnn
-
-
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
@@ -12,15 +10,11 @@ from utils.plots import colors, plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized
 from .loadimage import *
 from .apps import DetectStep2Config
-
 import sys
-# sys.path.insert(0, "/app/api.py")
-# sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from app.api import imageDB
 from app.api import riderDB
 from app.api import informationDB
 # mqtt 통신에서 img를 인풋으로 받아 실행되는 detection
-
 def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     # print("detect 시작")
     # Initialize
@@ -41,16 +35,13 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     agnostic_nms = False
     save_crop = False
     hide_labels = False
-
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=True)  # increment run
     # (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
-
     # Initialize
     set_logging()
     device = DetectStep2Config.device
     half = device.type != 'cpu'  # half precision only supported on CUDA
-
     # Load model
     # apps.py에서 모델 import
     model1 = DetectStep2Config.model1
@@ -69,9 +60,7 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         model1.half()
         model2.half()
         model3.half()
-
     classify = False
-
     # Set Dataloader
     t0 = time.time()
     vid_path, vid_writer = None, None
@@ -81,7 +70,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     # print((dataset[1]))
     # print((dataset[2]))
     # print((dataset[3]))
-
     # Run inference
     # if device.type != 'cpu':
     #     model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
@@ -89,25 +77,21 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     img = dataset[1]
     im0s = dataset[2]
     vid_cap = dataset[3]
-
     img = torch.from_numpy(img).to(device)
     img = img.half() if half else img.float()  # uint8 to fp16/32
     img /= 255.0  # 0 - 255 to 0.0 - 1.0
     if img.ndimension() == 3:
         img = img.unsqueeze(0)
-
     # Inference
     t1 = time_synchronized()
     pred1 = model1(img, augment=augment)[0]
     pred2 = model2(img, augment=augment)[0]
     pred3 = model3(img, augment=augment)[0]
-
     # Apply NMS
     pred1 = non_max_suppression(pred1, conf_thres, iou_thres, classes, agnostic_nms)
     pred2 = non_max_suppression(pred2, conf_thres, iou_thres, classes, agnostic_nms)
     pred3 = non_max_suppression(pred3, conf_thres, iou_thres, classes, agnostic_nms)
     t2 = time_synchronized()
-
     # Process detections kickboard
     kick_list = []
     kick_prob = []
@@ -127,12 +111,10 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         if len(det):
             # Rescale boxes from img_size to im0 size
             det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-
             # Print results
             for c in det[:, -1].unique():
                 n = (det[:, -1] == c).sum()  # detections per class
                 s += f"{n} {names1[int(c)]}{'s' * (n > 1)}, "  # add to string
-
             # Write results
             for *xyxy, conf, cls in reversed(det):
                 if save_img or save_crop or view_img:  # Add bbox to image
@@ -145,11 +127,9 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         imc = cv2.resize(im0, dsize=(0, 0), fx=3, fy=3, interpolation=cv2.INTER_AREA)
         cv2.imshow('ImageWindow', imc)
         cv2.waitKey(200)
-
         # Save results (image with detections)
         if save_img:
             cv2.imwrite(save_path, im0)
-
     # Process detections helmet
     n2 = 0
     for i, det in enumerate(pred2):  # detections per image
@@ -184,11 +164,12 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                     cv2.imshow('ImageWindow', imc)
                     cv2.waitKey(200)
         num_helmet = int(n2)
-
+        if len(helmet_loc) == 0:
+            helmet_loc.append(0)
+            helmet_prob = 0
         # Save results (image with detections)
         if save_img:
             cv2.imwrite(save_path, im0)
-
     n3 = 0
     # Process detections person
     for i, det in enumerate(pred3):  # detections per image
@@ -204,7 +185,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         if len(det):
             # Rescale boxes from img_size to im0 size
             det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-
             # Print results
             for c in det[:, -1].unique():
                 n3 = (det[:, -1] == c).sum()  # detections per class
@@ -221,7 +201,6 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                 cv2.imshow('ImageWindow', imc)
                 cv2.waitKey(200)
         num_person = int(n3)
-
     print(f'Done. ({time.time() - t0:.3f}s)')
     # print("detect 끝")
     # if num_person:
@@ -238,11 +217,13 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         if num_helmet < num_person:
             print("위반!!!!!!!!!!!!!!!!!!!!!")
             py_data1 = {'datetime': c_time, "location": "강남역", "rider_number": num_person}  # Json 형태로 변환
-            py_data2={"rider_location": str(frame_loc), "rider_percentage": frame_prob,'brand': str(kick_list),"helmet_number": num_helmet,"person_number": num_person}
-            py_data3={"helmet_location": str(helmet_loc), "helmet_percentage": helmet_prob,"person_location": str(person_loc), "person_percentage": person_prob}
-
+            py_data2 = {"rider_location": str(frame_loc), "rider_percentage": frame_prob, 'brand': str(kick_list),
+                        "helmet_number": num_helmet, "person_number": num_person,'datetime': c_time}
+            # py_data2={"helmet_number": num_helmet,"person_number": num_person}
+            #'person_location': '[[24, 10, 172, 411]]', 'person_percentage': [0.7623780369758606]
+            py_data3={"helmet_location": str(helmet_loc), "helmet_percentage": float(helmet_prob),"person_location": str(person_loc), "person_percentage": float(person_prob)}
             imageDB(py_data1, origin_frame)
-            riderDB(py_data2)
-            informationDB(py_data3)
+            riderDB(py_data2,py_data3)
+            # informationDB(py_data3)
     else:
         print("위반 아님")
