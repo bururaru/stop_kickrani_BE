@@ -7,7 +7,11 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-# 킥라니 멈춰!
+# 킥라니 멈춰! BE
+
+### FE : https://github.com/SangRakee/stop_kickrani_FE
+
+### Jetson-nano : https://github.com/bururaru/stop_kickrani_jetsonnano
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
