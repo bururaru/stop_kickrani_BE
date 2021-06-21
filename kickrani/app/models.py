@@ -28,4 +28,4 @@ class Rider_information(models.Model):
     helmet_location= models.CharField(max_length=250, null=True)
     helmet_percentage= models.FloatField(max_length=250, null=True)
     person_location= models.CharField(max_length=250, null=True)
-    person_percentage= models.FloatField(max_length=250, null=True)
+    person_percentage= models.CharField(max_length=250, null=True)

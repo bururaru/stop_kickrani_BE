@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Rider
+from .models import Image
+from .models import Rider_information
 from .serializer import DailyChartSerializer
 from .serializer import AnnualChartSerializer
 from .serializer import ImageSerializer
@@ -71,10 +73,11 @@ def dateHandler(date):
     date = date.replace(' ', '')
     return date
 
-def riderDB(request):
-    request['locatoin'] = "강남역"  #장소 임의로 추가
 
-
+def riderDB(request,py_data3):
+    request['location'] = "서울특별시 서초구 서초동 1374"  #장소 임의로 추가
+    imageName = dateHandler(request["datetime"])
+    request['image_ID'] = imageName
 
     #foul 1:2인이상, 2: 헬멧미착용, 3:2인이상 및 헬멧 미착용 4:
     if request["person_number"]>1:
@@ -88,12 +91,27 @@ def riderDB(request):
         # else:
         #     print("정상적인 사용자 입니다")
         #     return Response(serializer.data)
+
     serializer = RiderSerializer(data=request) #data=request.data
+    print(serializer)
     if(serializer.is_valid()):
         print('table2 DB 저장 완료')
         serializer.save()
     else:
         print('table2 DB false')
+    riderID=serializer["rider_ID"].value
+    py_data3["rider_ID"]=riderID
+
+    serializer1 = InformationSerializer(data=py_data3)
+    print('###############',py_data3)
+    print(serializer1)
+
+    if (serializer1.is_valid()):
+        print('table3 DB 저장 완료')
+        serializer1.save()
+    else:
+        print('table3 DB false')
+
     return Response(serializer.data)
 
 def imageDB(request, origin_frame):
@@ -126,10 +144,11 @@ def imageDB(request, origin_frame):
         serializer.save()
     else:
         print('table1 DB false')
+
     return Response(serializer.data)
 
-def informationDB(request):
 
+def informationDB(request):
     serializer = InformationSerializer(data=request)
     if(serializer.is_valid()):
         print('table3 DB 저장 완료')

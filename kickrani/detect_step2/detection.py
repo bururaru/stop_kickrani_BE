@@ -167,6 +167,7 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
         if len(helmet_loc) == 0:
             helmet_loc.append(0)
             helmet_prob = 0
+
         # Save results (image with detections)
         if save_img:
             cv2.imwrite(save_path, im0)
@@ -201,6 +202,7 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
                 cv2.imshow('ImageWindow', imc)
                 cv2.waitKey(200)
         num_person = int(n3)
+
     print(f'Done. ({time.time() - t0:.3f}s)')
     # print("detect 끝")
     # if num_person:
@@ -211,7 +213,9 @@ def detect2(frame, frame_loc, frame_prob, c_time, origin_frame):
     #     print("사람, 헬멧 탐지 안됨!")
     # 정확도가 가장 높게 나온 킥보드 브랜드 하나만 반환
     if kick_list:
+    # if True:
         kick_list = kick_list[kick_prob.index(max(kick_prob))]
+        # kick_list=kick_list[0]
         print(f'킥보드 브랜드 : {kick_list}')
         # 헬멧 수보다 사람 수가 많으면 위반 ( 사람수가 3 이상으로 많은 숫자로 탐지되어도 동일하게 적용)
         if num_helmet < num_person:

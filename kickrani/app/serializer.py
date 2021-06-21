@@ -18,7 +18,7 @@ class RiderSerializer(serializers.ModelSerializer) :
 class InformationSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Rider_information
-        fields = ['helmet_location','helmet_percentage','person_location','person_percentage']
+        fields = ['information_Id','rider_ID','helmet_location','helmet_percentage','person_location','person_percentage']
 
 class DailyChartSerializer(serializers.ModelSerializer) :
     class Meta:
